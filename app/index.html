@@ -28,13 +28,13 @@
   <div ng-app="myApp" ng-controller="myCtrl">
     <div class="row">
       <div class="col-md-3">
-        <b> Across: </b> <br>
+        <b> Down: </b> <br>
         <div ng-repeat="word in game.across">
           {{word.index}}. {{ word.hint }}
         </div>
       </div>
       <div class="col-md-3">
-        <b> Down: </b> <br>
+        <b> Across: </b> <br>
         <div ng-repeat="word in game.down">
           {{word.index}}. {{ word.hint }}
         </div>
