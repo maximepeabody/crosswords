@@ -20,7 +20,7 @@ keys = ["id","thekey","key","source","file","date","day","difficulty","direction
   "number","instruction","flag","groupid","question","answer"]
 
 MAX = 15
-EMPTY = "###"
+EMPTY = "#"
 OPEN = "O"
 
 class Board:
@@ -149,7 +149,8 @@ def create_board(board, num_iterations, dictionary, clue_map):
           index = count
           count += 1
 
-        across_set.append({"word": word, "index": index, "x": pos_x, "y": pos_y})
+        across_set.append({"word": word, "index": index, "x": pos_x, "y": pos_y,
+                          "hint": clue_map[word]["hint"]})
         word_set[word] = True
     else: 
       pos_y = random.randint(1, MAX - len(word))
@@ -165,7 +166,8 @@ def create_board(board, num_iterations, dictionary, clue_map):
           index_map[str(pos_x) + "," + str(pos_y)] = count
           index = count
           count += 1
-        down_set.append({"word": word, "index": index, "x": pos_x, "y": pos_y})
+        down_set.append({"word": word, "index": index, "x": pos_x, "y": pos_y,
+                        "hint": clue_map[word]["hint"]})
         word_set[word] = True
   return board, down_set, across_set
     
@@ -250,8 +252,23 @@ def main():
   clue_map = get_clue_map(clues, 1, 100000)
   dictionary = create_dictionary(clue_map)
   board, down, across = create_board(board, num_iterations, dictionary, clue_map)
-  db.child("boards").push({"board": board, "down": down, "across": across})
+  # create a new board object to store letter and guess
+  new_board = copy.deepcopy(board)
+  for y in range(len(board[0])):
+    for x in range(len(board)):
+      new_board[x][y] = {
+        "letter": board[x][y],
+        "guess": "",
+        "empty": board[x][y] == EMPTY,
+        "index": ""}
+  for word in down:
+    new_board[word["x"]][word["y"]]["index"] = str(word["index"])
+  for word in across:
+    new_board[word["x"]][word["y"]]["index"] = str(word["index"])
 
+  db.child("boards").child("game1").set({"board": new_board, "down": down, "across": across})
+
+  
   #print(board)
   #print(len(words))
   print ("")

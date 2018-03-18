@@ -1,0 +1,70 @@
+
+<!DOCTYPE html>
+<html>
+  <!-- Angular -->
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>
+  
+  <!-- Firebase -->
+  <script src="https://www.gstatic.com/firebasejs/3.6.6/firebase.js"></script>
+  
+  <!-- AngularFire -->
+  <script src="https://cdn.firebase.com/libs/angularfire/2.3.0/angularfire.min.js"></script>
+  
+  <!-- Bootstrap style code -->
+  <!-- Latest compiled and minified CSS -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+
+  <!-- jQuery library -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+  <!-- Latest compiled JavaScript -->
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+  
+  <!-- the app code -->
+  <script src="app.js"></script>
+
+  <body>
+    
+  <div ng-app="myApp" ng-controller="myCtrl">
+    <div class="row">
+      <div class="col-md-3">
+        <b> Across: </b> <br>
+        <div ng-repeat="word in game.across">
+          {{word.index}}. {{ word.hint }}
+        </div>
+      </div>
+      <div class="col-md-3">
+        <b> Down: </b> <br>
+        <div ng-repeat="word in game.down">
+          {{word.index}}. {{ word.hint }}
+        </div>
+      </div>
+      <div class="col-md-6">
+      <b> Board. </b> <br>
+      <table class="table table-bordered">
+        <tbody>
+          <tr ng-repeat="row in game.board">
+            <td style="padding: 0px" ng-class="{'text-center success': cell.empty}" ng-repeat="cell in row">
+            <div style="width: 35px; height: 35px">
+            <p style="margin:0px; padding:0px; font-size: 7px; list-style: none">
+            {{cell.index}}
+            </p>
+            <div ng-hide="cell.empty">
+            <input
+               name="input"
+               style="width:25px; height:25px"
+               ng-model="cell.guess"
+               placeholder=""
+               maxlength="1">
+            </div>
+            </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      </div>
+    </div>
+  </div>
+    
+  </body>
+</html>
