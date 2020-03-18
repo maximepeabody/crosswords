@@ -25,6 +25,7 @@ app.controller('myCtrl', function($scope, $firebaseObject) {
   //$scope.cell_width = 100/board_length + '%';
 
   $scope.GenerateGame = function(difficulty) {
+    $scope.gamecode = difficulty;
     console.log("generating puzzle");
     // Fetch random game of specified max_difficulty
     var game_num = Math.floor(Math.random() * Math.floor(4)) + 1;
