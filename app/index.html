@@ -3,13 +3,13 @@
 <html>
   <!-- Angular -->
   <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>
-  
+
   <!-- Firebase -->
   <script src="https://www.gstatic.com/firebasejs/3.6.6/firebase.js"></script>
-  
+
   <!-- AngularFire -->
   <script src="https://cdn.firebase.com/libs/angularfire/2.3.0/angularfire.min.js"></script>
-  
+
   <!-- Bootstrap style code -->
   <!-- Latest compiled and minified CSS -->
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
@@ -19,23 +19,40 @@
 
   <!-- Latest compiled JavaScript -->
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-  
+
   <!-- the app code -->
   <script src="app.js"></script>
 
   <body>
-    
+
   <div ng-app="myApp" ng-controller="myCtrl">
+    <div>
+      <h1> Welcome! Select a difficulty or paste a game code to start.</h1>
+      <button ng-click=GenerateGame(difficulty)> Generate Game </button>
+      <select ng-model="difficulty" name="difficulty">
+        <option value="1">Monday</option>
+        <option value="2">Tuesday</option>
+        <option value="3">Wednesday</option>
+        <option value="4">Thursday</option>
+        <option value="5">Friday</option>
+      </select>
+    </div>
+    <div>
+      <input placeholder="Or paste game code here" ng-model="gamecode"> </input>
+      <button ng-click="GoToGame(gamecode)"> Go </button>
+    </div>
+
+    <div>
     <div class="row">
       <div class="col-md-3">
         <b> Down: </b> <br>
-        <div ng-repeat="word in game.across">
+        <div ng-repeat="word in game.across | orderBy:'index'">
           {{word.index}}. {{ word.hint }}
         </div>
       </div>
       <div class="col-md-3">
         <b> Across: </b> <br>
-        <div ng-repeat="word in game.down">
+        <div ng-repeat="word in game.down | orderBy:'index'">
           {{word.index}}. {{ word.hint }}
         </div>
       </div>
@@ -65,6 +82,7 @@
       </div>
     </div>
   </div>
-    
+</div>
+
   </body>
 </html>
