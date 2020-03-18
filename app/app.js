@@ -25,6 +25,7 @@ app.controller('myCtrl', function($scope, $firebaseObject) {
   //$scope.cell_width = 100/board_length + '%';
 
   $scope.GenerateGame = function(difficulty) {
+    console.log("generating puzzle");
     // Fetch random game of specified max_difficulty
     var game_num = Math.floor(Math.random() * Math.floor(4)) + 1;
     // Fetch the puzzle data
@@ -48,6 +49,7 @@ app.controller('myCtrl', function($scope, $firebaseObject) {
   };
 
   $scope.GoToGame = function(gamecode)  {
+    console.log("fetching game session");
     db.ref().child("games").child(gamecode).once("value").then(function(snapshot){
       if (snapshot.val() == null){
         console.log ("no puzzle found for gamecode");
