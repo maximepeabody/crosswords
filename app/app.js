@@ -12,6 +12,8 @@ app.controller('myCtrl', function($scope, $firebaseObject, $location) {
   firebase.initializeApp(config);
   var db = firebase.database();
 
+  $scope.username = "anon_" + Math.random().toString(36).substring(2, 8)
+
   $scope.GenerateGame = function(difficulty) {
     $scope.game = null;
     console.log("generating puzzle");
