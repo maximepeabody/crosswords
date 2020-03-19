@@ -28,7 +28,7 @@
 
   <div ng-app="myApp" ng-controller="myCtrl">
     <div>
-      <h1> Welcome! Select a difficulty or paste a game code to start.</h1>
+      <h1> Welcome! Select a difficulty to start. Share your URL to play cooperatively</h1>
       <button ng-click=GenerateGame(difficulty)> Generate Game </button>
       <select ng-model="difficulty" name="difficulty" >
         <option value="1" selected="selected">Monday</option>
@@ -38,13 +38,9 @@
         <option value="5">Friday</option>
       </select>
     </div>
-    <div>
-      <input placeholder="Or paste game code here" ng-model="gamecode"> </input>
-      <button ng-click="GoToGame(gamecode)"> Go </button>
-    </div>
 
     <div ng-keyup="Save()">
-    <div class="row">
+    <div class="row" ngShow=game>
       <div class="col-md-3">
         <b> Down: </b> <br>
         <div ng-repeat="word in game.across | orderBy:'index'">

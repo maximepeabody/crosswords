@@ -12,22 +12,6 @@ app.controller('myCtrl', function($scope, $firebaseObject, $location) {
   firebase.initializeApp(config);
   var db = firebase.database();
 
-  console.log($location.url());
-
-
-
-  // var ref = db.ref().child("puzzles").child("1").child("game-4");
-
-  // var ref = firebase.database().ref().child("boards").child("game1");
-  //   download the data into a local object
-  // var syncObject = $firebaseObject(ref);
-
-  // synchronize the object with a three-way data binding
-  // click on `index.html` above to see it used in the DOM!
-  //   syncObject.$bindTo($scope, "game");
-  //var board_length = $scope.game.board.length;
-  //$scope.cell_width = 100/board_length + '%';
-
   $scope.GenerateGame = function(difficulty) {
     $scope.game = null;
     console.log("generating puzzle");
@@ -97,5 +81,17 @@ app.controller('myCtrl', function($scope, $firebaseObject, $location) {
     //Change the URL gamecode parm
     $location.search('gamecode', gamecode);
   };
+
+
+
+  // get gamecode from url if represent
+  var tokens = $location.url().split("gamecode=");
+  console.log(tokens);
+  if (tokens.length > 1) {
+    console.log("gamecode token")
+    $scope.GoToGame(tokens[1]);
+  } else {
+    console.log("no tokens");
+  }
 
 });
