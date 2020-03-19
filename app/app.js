@@ -1,5 +1,21 @@
 var app = angular.module('myApp', ["firebase", "ngRoute"]);
 
+app.directive('focusMe', function($timeout) {
+  return {
+    link: function(scope, element, attrs) {
+      scope.$watch(attrs.focusMe, function(value) {
+        if(value === true) {
+          console.log('value=',value);
+          //$timeout(function() {
+            element[0].focus();
+            scope[attrs.focusMe] = false;
+          //});
+        }
+      });
+    }
+  };
+});
+
 app.controller('myCtrl', function($scope, $firebaseObject, $location) {
   //console.log($location.search());
   // Initialize the Firebase SDK
@@ -81,6 +97,26 @@ app.controller('myCtrl', function($scope, $firebaseObject, $location) {
     //Change the URL gamecode parm
     $location.search('gamecode', gamecode);
   };
+
+  $scope.SetWord = function(word, dir) {
+    if(word.guess.length > word.word.length) {
+      alert("guess too long");
+      return;
+    }
+    console.log(word);
+    for (var i = 0; i < word.word.length; i++) {
+      if(dir == "across") {
+        console.log($scope.game.board[word.x+i][word.y]);
+        $scope.game.board[word.x+i][word.y].guess = word.guess.charAt(i);
+      } else if (dir == "down") {
+        $scope.game.board[word.x][word.y + i].guess = word.guess.charAt(i);
+      } else {
+        console.log("dir is set wrong");
+      }
+    }
+    console.log($scope.game.board[word.x][word.y]);
+    $scope.Save();
+  }
 
 
 
