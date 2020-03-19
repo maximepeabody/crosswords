@@ -1,6 +1,5 @@
 var app = angular.module('myApp', ["firebase", "ngRoute"]);
 
-
 app.controller('myCtrl', function($scope, $firebaseObject, $location) {
   //console.log($location.search());
   // Initialize the Firebase SDK
@@ -12,6 +11,10 @@ app.controller('myCtrl', function($scope, $firebaseObject, $location) {
   };
   firebase.initializeApp(config);
   var db = firebase.database();
+
+  console.log($location.url());
+
+
 
   // var ref = db.ref().child("puzzles").child("1").child("game-4");
 
@@ -26,7 +29,7 @@ app.controller('myCtrl', function($scope, $firebaseObject, $location) {
   //$scope.cell_width = 100/board_length + '%';
 
   $scope.GenerateGame = function(difficulty) {
-    $scope.gamecode = difficulty;
+    $scope.game = null;
     console.log("generating puzzle");
     // Fetch random game of specified max_difficulty
     var game_num = Math.floor(Math.random() * Math.floor(4)) + 1;
@@ -41,17 +44,28 @@ app.controller('myCtrl', function($scope, $firebaseObject, $location) {
           // Generate game / generate gamecode.
           gamecode =  Math.random().toString(36).substring(2, 15)
             + Math.random().toString(36).substring(2, 15);
-          // Create a new game ref and copy the puzzle data there.
+
+          // Create a new game reference, and save the puzzle data there.
           db.ref().child("games").child(gamecode).set(puzzle);
-          var gameSyncObject =  $firebaseObject(
+
+          // Load the new game into the scope
+          $scope.game =  $firebaseObject(
             db.ref().child("games").child(gamecode));
-          gameSyncObject.$bindTo($scope, "game");
+
+          $scope.game.$loaded().then(function(data) {
+            console.log("loaded game"); // true
+          })
+          .catch(function(error) {
+            console.error("Error:", error);
+          });
           $scope.gamecode = gamecode;
+          $scope.changeUrl(gamecode);
         }
       });
   };
 
   $scope.GoToGame = function(gamecode)  {
+    $scope.game = null;
     console.log("fetching game session");
     db.ref().child("games").child(gamecode).once("value").then(function(snapshot){
       if (snapshot.val() == null){
@@ -60,8 +74,28 @@ app.controller('myCtrl', function($scope, $firebaseObject, $location) {
         console.log("found puzzle, loading it.");
       }
     });
-    var gameSyncObject = $firebaseObject(db.ref().child("games").child(gamecode));
-    gameSyncObject.$bindTo($scope, "game");
+    $scope.game = $firebaseObject(db.ref().child("games").child(gamecode));
+    $scope.game.$loaded().then(function(data) {
+      console.log("loaded game"); // true
+    })
+    .catch(function(error) {
+      console.error("Error:", error);
+    });
+    $scope.changeUrl(gamecode);
+  };
+
+  $scope.Save = function() {
+    console.log("saving game");
+    $scope.game.$save().then(function(ref) {
+      ref.key === $scope.game.$id; // true
+    }, function(error) {
+      console.log("Error:", error);
+    });
+  }
+
+  $scope.changeUrl = function(gamecode) {
+    //Change the URL gamecode parm
+    $location.search('gamecode', gamecode);
   };
 
 });

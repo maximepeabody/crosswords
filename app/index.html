@@ -30,8 +30,8 @@
     <div>
       <h1> Welcome! Select a difficulty or paste a game code to start.</h1>
       <button ng-click=GenerateGame(difficulty)> Generate Game </button>
-      <select ng-model="difficulty" name="difficulty">
-        <option value="1">Monday</option>
+      <select ng-model="difficulty" name="difficulty" >
+        <option value="1" selected="selected">Monday</option>
         <option value="2">Tuesday</option>
         <option value="3">Wednesday</option>
         <option value="4">Thursday</option>
@@ -43,7 +43,7 @@
       <button ng-click="GoToGame(gamecode)"> Go </button>
     </div>
 
-    <div>
+    <div ng-keyup="Save()">
     <div class="row">
       <div class="col-md-3">
         <b> Down: </b> <br>

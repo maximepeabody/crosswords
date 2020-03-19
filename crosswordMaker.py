@@ -95,11 +95,12 @@ def get_clue_map(clues, max_difficulty = 6, num_clues = 50):
       print("clue could not be parsed")
       continue
     # validate the question
-    question = clue["question"].lower()
+    question = clue["question"]
+    question.lower()
     if question == "":
       print("empty question.")
       continue
-    if "across" in question or "down" in question:
+    if "across" in question or "down" in question or "Across" in question or "Down" in question:
       print("question contains 'across' or 'down' reference.")
 
     # validate the answer
