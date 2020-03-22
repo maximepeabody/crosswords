@@ -3,6 +3,7 @@ import random
 import copy
 import sys
 from pyrebase import pyrebase
+import pygtrie
 
 config = {
     "apiKey": "AIzaSyC1xwRC3Ww0rFGUcRhO_WWuckLPPzcuNB4",
@@ -22,6 +23,7 @@ keys = ["id","thekey","key","source","file","date","day","difficulty","direction
 MAX = 15
 EMPTY = "#"
 OPEN = "O"
+
 
 class Board:
   words_down = []
@@ -64,6 +66,8 @@ class Square:
   def is_empty(self):
     return self.letter == EMPTY
 
+
+
 # Load the clues
 #
 # Returns: a list of clue objects, containing the key-value pairs from the cvs file.
@@ -82,10 +86,10 @@ def load_clues():
   return clues
 
 # Gets a map of word -> {hint, difficulty}
-# TODO: set difficulty
-def get_clue_map(clues, max_difficulty = 6, num_clues = 50):
+# TODO preprocess clue map
+def get_clue_trie(clues, max_difficulty = 6, num_clues = 50):
   print("Creating clue set")
-  clue_map= {}
+  clue_trie = pygtrie.CharTrie();
   for clue in clues:
     try:
       diff = int(clue["difficulty"])
@@ -100,7 +104,9 @@ def get_clue_map(clues, max_difficulty = 6, num_clues = 50):
     if question == "":
       print("empty question.")
       continue
-    if "across" in question or "down" in question or "Across" in question or "Down" in question:
+    if "across" in question or "down" in question or \
+        "Across" in question or "Down" in question or \
+        "this puzzle" in question:
       print("question contains 'across' or 'down' reference.")
 
     # validate the answer
@@ -108,16 +114,16 @@ def get_clue_map(clues, max_difficulty = 6, num_clues = 50):
       print("invalid one char answer: " + clue["answer"])
       continue
     if new_clue["difficulty"] <= max_difficulty :
-      clue_map[clue["answer"]] = new_clue
+      clue_trie[clue["answer"]] = new_clue
     #  num_clues -= 1
   #    if num_clues <= 0:
   #      break
-  return clue_map
+  return clue_trie
 
 # given a clue map, creates a list of all the words that appear in it.
-def create_dictionary(clue_map):
+def create_dictionary(clue_trie):
   set = []
-  for word, clue in clue_map.items():
+  for word, clue in clue_trie.items():
     set.append(word)
   return set
 
@@ -134,10 +140,13 @@ def place_word(word, board, pos_x, pos_y, dir):
 
 ## Create board:
 # This tries to place words on the board randomly for num_iterations iterations.
-def create_board(board, num_iterations, dictionary, clue_map):
+###
+# TODO:
+# - remove any words that don't cross.
+# - make a sparseness score
+def create_board(board, num_iterations, dictionary, clue_trie):
   new_set = []
-  across_set = []
-  down_set = []
+  # maps word to word data
   word_set = {}
   count = 0
   for i in range(num_iterations):
@@ -152,7 +161,7 @@ def create_board(board, num_iterations, dictionary, clue_map):
         board = place_word(word, board, pos_x, pos_y, "across")
         print_board(board)
         word_data = {"word": word, "index": -1, "x": pos_x, "y": pos_y,
-                          "hint": clue_map[word]["hint"], "dir": "across"}
+                          "hint": clue_trie[word]["hint"], "dir": "across"}
         word_set[word] = word_data
     else:
       pos_x = random.randint(1, MAX - 1)
@@ -162,7 +171,7 @@ def create_board(board, num_iterations, dictionary, clue_map):
         board = place_word(word, board, pos_x, pos_y, "down")
         print_board(board)
         word_data = {"word": word, "index": -1, "x": pos_x, "y": pos_y,
-                        "hint": clue_map[word]["hint"], "dir": "down"}
+                        "hint": clue_trie[word]["hint"], "dir": "down"}
         word_set[word] = word_data
 
   # set the correct indexes: map each word to a [x][y] map, and then sort.
@@ -176,24 +185,27 @@ def create_board(board, num_iterations, dictionary, clue_map):
       (index_map[pos_x][pos_y]).append(word);
 
   count = 0;
-  for x in range(1, MAX):
-    for y in range(1, MAX):
+  for y in range(1, MAX):
+    for x in range(1, MAX):
       if index_map[x][y] != None:
         for word in index_map[x][y]:
-          word_set[word]["index"] = count
+          word_set[word]["index"] = str(count)
         count += 1
 
-  down_set = []
-  across_set = []
+  # maps words index to word data
+  down = []
+  across = []
+  # down = {}
+  # across = {}
   for word, data in word_set.items():
-    if data["index"] == -1:
-      print("abort!! what?")
     if data["dir"] == "down":
-      down_set.append(data)
+      down.append(data)
+      # down[data["index"]] = data
     else:
-      across_set.append(data)
+      across.append(data)
+    #  across[data["index"]] = data
 
-  return board, down_set, across_set
+  return board, down, across
 
 
 ###
@@ -271,32 +283,49 @@ def fill_board_data(board, down, across):
         "letter": board[x][y],
         "guess": "",
         "empty": board[x][y] == EMPTY,
-        "index": ""}
+        "index": "",
+        "across_index": -1,
+        "down_index": -1
+        }
+
   for word in down:
+    # set the index to the cell corresponding to the first letter of the word
     new_board[word["x"]][word["y"]]["index"] = str(word["index"])
+    # for each cell that the word is in, set a pointer to the down array
+    char_count = 0;
+    for char in word["word"]:
+      new_board[word["x"]][word["y"] + char_count]["down_index"] = word["index"]
+      char_count += 1
+
   for word in across:
     new_board[word["x"]][word["y"]]["index"] = str(word["index"])
+    # for each cell that the word is in, set a pointer to the across data
+    char_count = 0
+    for char in word["word"]:
+      print(char);
+      new_board[word["x"] + char_count][word["y"]]["across_index"] = word["index"]
+      char_count += 1
   return new_board
 
 # Creates a random puzzle of specified difficulty.
-def create_puzzle(clues, difficulty):
+def create_puzzle(clues, clue_trie):
   board = [[EMPTY for x in range(0, MAX+2)] for y in range(0, MAX+2)]
   new_set = []
   num_iterations = 1000000
   random.shuffle(clues)
-  clue_map = get_clue_map(clues, difficulty, 100000)
-  dictionary = create_dictionary(clue_map)
-  board_view, down, across = create_board(board, num_iterations, dictionary, clue_map)
-  new_board = fill_board_data(board_view, down, across)
-  return board_view, new_board, down, across
+  dictionary = create_dictionary(clue_trie)
+  board_view, down, across = create_board(board, num_iterations, dictionary, clue_trie)
+  board = fill_board_data(board_view, down, across)
+  return board_view, board, down, across
 
 def main():
   games_per_difficulty = 5;
   # load clues from CSV file
   clues = load_clues()
   for difficulty in range(1,6):
+    clue_trie = get_clue_trie(clues, difficulty, 100000)
     for game_num in range(1, games_per_difficulty):
-      board_view, board, down, across = create_puzzle(clues, difficulty)
+      board_view, board, down, across = create_puzzle(clues, clue_trie)
       print_board(board_view)
       db.child("puzzles").child(difficulty).child("game-"+str(game_num)).set({"board": board, "down": down, "across": across})
 
@@ -313,9 +342,9 @@ def old_main():
   num_iterations = 1000000
   clues = load_clues()
   random.shuffle(clues)
-  clue_map = get_clue_map(clues, 1, 100000)
-  dictionary = create_dictionary(clue_map)
-  board, down, across = create_board(board, num_iterations, dictionary, clue_map)
+  clue_trie = get_clue_trie(clues, 1, 100000)
+  dictionary = create_dictionary(clue_trie)
+  board, down, across = create_board(board, num_iterations, dictionary, clue_trie)
   # create a new board object to store letter and guess
   new_board = copy.deepcopy(board)
   for y in range(len(board[0])):
@@ -358,12 +387,12 @@ def old_main():
   print_board(empty_board)
   print ("-- Down. --")
   for word in down:
-    #print (str(word["index"]) + ". " + word["word"] + " , hint: " + clue_map[word["word"]]["hint"])
-    print (str(word["index"]) + ". " + clue_map[word["word"]]["hint"])
+    #print (str(word["index"]) + ". " + word["word"] + " , hint: " + clue_trie[word["word"]]["hint"])
+    print (str(word["index"]) + ". " + clue_trie[word["word"]]["hint"])
   print ("-- Across. --")
   for word in across:
-    #print (str(word["index"]) + ". " + word["word"] + " , hint: " + clue_map[word["word"]]["hint"])
-    print (str(word["index"]) + ". " + clue_map[word["word"]]["hint"])
+    #print (str(word["index"]) + ". " + word["word"] + " , hint: " + clue_trie[word["word"]]["hint"])
+    print (str(word["index"]) + ". " + clue_trie[word["word"]]["hint"])
 
 
 main()

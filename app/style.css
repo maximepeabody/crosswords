@@ -1,0 +1,140 @@
+
+.main-container {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  padding: 10px;
+}
+
+.header {
+  width: 100%;
+}
+
+.board-container {
+  padding: 10px;
+  display: flex;
+  flex-direction: row;
+  outline: none;
+  width: 600px;
+  height: 600px;
+}
+
+.board-column {
+  display: flex;
+  flex-direction: column;
+  flex: 1
+}
+
+.cell {
+  border: solid;
+  border-width: 1px;
+  border-color: black;
+  flex: 1;
+}
+
+.cell-input {
+  width:100%;
+  height:100%;
+  float: left;
+  text-align:center;
+  border-color: black;
+}
+
+.cell-selected {
+  width:100%;
+  height:100%;
+  border: solid;
+  border-width: 1px;
+  border-color: black;
+  float:left;
+  text-align:center;
+  border-color: black;
+  background-color: #d9edf7;
+}
+
+.cell-selected-focus {
+  border: solid;
+  border-width: 1px;
+  border-color: black;
+  width:100%;
+  height:100%;
+  float: left;
+  text-align:center;
+  border-color: black;
+  background-color: #337ab7;
+}
+
+.cell-black {
+  width: 100%;
+  height: 100%;
+  float: left;
+  text-align:center;
+  background-color: black;
+  border-color: white;
+}
+
+.cell-index {
+  margin:0px;
+  padding:3px;
+  font-size: 7px;
+  list-style: none;
+  position: absolute;
+}
+
+.cell-input-letter {
+  position: relative;
+  margin:0px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+
+}
+
+::-webkit-scrollbar {
+  -webkit-appearance: none;
+  width: 7px;
+}
+
+::-webkit-scrollbar-thumb {
+  border-radius: 4px;
+  background-color: rgba(0, 0, 0, .5);
+  -webkit-box-shadow: 0 0 1px rgba(255, 255, 255, .5);
+}
+
+.hint-list-container {
+  max-width: 300px;
+  padding: 10px;
+}
+
+.hint-list {
+  overflow-y: scroll;
+  max-height: 300px;
+}
+
+
+.hint-list-hint {
+
+}
+
+.hint-list-hint-selected {
+  background-color: #d9edf7;
+}
+
+.current-hint {
+  text-align:center;
+}
+
+
+.loader {
+  border: 16px solid #f3f3f3; /* Light grey */
+  border-top: 16px solid #3498db; /* Blue */
+  border-radius: 50%;
+  width: 120px;
+  height: 120px;
+  animation: spin 2s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}

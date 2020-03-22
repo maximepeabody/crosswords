@@ -20,66 +20,20 @@
   <!-- Latest compiled JavaScript -->
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 
-  <!-- the app code -->
-  <script src="app.js"></script>
+  <link rel="stylesheet" type="text/css" href="style.css">
+
+  <script src="./index.js">
+
+  </script>
 
   <body>
-    <div ng-address-bar> </div>
-
-  <div ng-app="myApp" ng-controller="myCtrl">
-    <div>
-      <h1> Welcome! Select a difficulty to start. Share your URL to play cooperatively</h1>
-      <button ng-click=GenerateGame(difficulty)> Generate Game </button>
-      <select ng-model="difficulty" name="difficulty" >
-        <option value="1" selected="selected">Monday</option>
-        <option value="2">Tuesday</option>
-        <option value="3">Wednesday</option>
-        <option value="4">Thursday</option>
-        <option value="5">Friday</option>
-      </select>
+      <h1> Welcome! Select a game or paste a gamecode. Share your URL to play cooperatively</h1>
+      <button onclick="GenerateGame()"> Generate Game </button>
+      <div id='loader'></div>
+      <br>
+      <br>
+      <input placeholder="gamecode" id="gamecode-input"> <button onclick="LoadGame()"> Load Game </button>
     </div>
-
-    <div ng-keyup="Save()">
-    <div class="row" ngShow=game>
-      <div class="col-md-3">
-        <b> Down: </b> <br>
-        <div ng-repeat="word in game.across | orderBy:'index'">
-          {{word.index}}. {{ word.hint }}
-        </div>
-      </div>
-      <div class="col-md-3">
-        <b> Across: </b> <br>
-        <div ng-repeat="word in game.down | orderBy:'index'">
-          {{word.index}}. {{ word.hint }}
-        </div>
-      </div>
-      <div class="col-md-6">
-      <b> Board. </b> <br>
-      <table class="table table-bordered">
-        <tbody>
-          <tr ng-repeat="row in game.board">
-            <td style="padding: 0px; margin:0px; width: 35px; height: 35px" ng-class="{'text-center success': cell.empty}" ng-repeat="cell in row">
-            <div style="width: 35px; height: 35px">
-              <div ng-hide="cell.empty">
-              <input
-                 name="input"
-                 style="border: 0px; width:35px; height:35px; position: absolute; text-align:center"
-                 ng-model="cell.guess"
-                 placeholder=""
-                 maxlength="1" >
-              </div>
-            <p style="margin:0px; padding:3px; font-size: 7px; list-style: none; position: absolute">
-            {{cell.index}}
-            </p>
-            </div>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-      </div>
-    </div>
-  </div>
-</div>
 
   </body>
 </html>

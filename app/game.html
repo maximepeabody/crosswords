@@ -20,55 +20,44 @@
   <!-- Latest compiled JavaScript -->
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 
+  <!-- Stylesheet -->
+  <link rel="stylesheet" href="./style.css">
+
   <!-- the app code -->
   <script src="app.js"></script>
 
   <body>
     <div ng-address-bar> </div>
 
-  <div ng-app="myApp" ng-controller="myCtrl">
+  <div ng-app="myApp" ng-controller="myCtrl" tabindex="0" ng-keyup="processInput($event)">
     <div>
-      <button href="/"> Home </button>
+      <a href="./index.html"> Home </a>
       <input name="username" ng-model="username">
     </div>
 
-    <div ng-keyup="Save()">
+    <div>
     <div class="row" ngShow=game>
       <div class="col-md-3">
         <b> Down: </b> <br>
-        <div ng-repeat="word in game.across | orderBy:'index'">
+        <div ng-repeat="word in game.down | orderBy:indexFromWord" id = "{{'down-'+index}}">
           {{word.index}}. {{ word.hint }}
         </div>
       </div>
       <div class="col-md-3">
         <b> Across: </b> <br>
-        <div ng-repeat="word in game.down | orderBy:'index'">
+        <div ng-repeat="word in game.across | orderBy: indexFromWord" id = "{{'across-'+index}}">
           {{word.index}}. {{ word.hint }}
         </div>
       </div>
       <div class="col-md-6">
       <b> Board. </b> <br>
-      <table class="table table-bordered">
-        <tbody>
-          <tr ng-repeat="row in game.board">
-            <td style="padding: 0px; margin:0px; width: 35px; height: 35px" ng-class="{'text-center success': cell.empty}" ng-repeat="cell in row">
-            <div style="width: 35px; height: 35px">
-              <div ng-hide="cell.empty">
-              <input
-                 name="input"
-                 style="border: 0px; width:35px; height:35px; position: absolute; text-align:center"
-                 ng-model="cell.guess"
-                 placeholder=""
-                 maxlength="1" >
-              </div>
-            <p style="margin:0px; padding:3px; font-size: 7px; list-style: none; position: absolute">
-            {{cell.index}}
-            </p>
+      <div class="board-container" id="board-container">
+          <div ng-repeat="column in game.board" class="board-column">
+            <div ng-repeat="cell in column" class="cell" ng-click="processClick($parent.$index, $index)">
+              <div cell-dir x="{{$parent.$index}}" y="{{$index}}"></div>
             </div>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+          </div>
+      </div>
       </div>
     </div>
   </div>

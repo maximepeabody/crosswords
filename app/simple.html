@@ -1,0 +1,40 @@
+
+<!DOCTYPE html>
+<html>
+  <!-- Firebase -->
+  <script src="https://www.gstatic.com/firebasejs/3.6.6/firebase.js"></script>
+
+  <!-- Stylesheet -->
+  <link rel="stylesheet" href="./style.css">
+
+  <!-- the app code -->
+  <script src="simple_app.js"></script>
+
+  <body>
+  <div id="main-container" class="main-container">
+    <div id="header" class="header">
+      <a href="./index.html"> Back </a>
+      <br>
+    </div>
+
+
+    <div class="hint-list-container">
+      <b> Down: </b> <br>
+      <div id="down-list" class="hint-list">
+      </div>
+    </div>
+    <div class="hint-list-container">
+      <b> Across: </b> <br>
+      <div id="across-list" class="hint-list">
+      </div>
+    </div>
+    <div class="game-container">
+    <b> Board. </b> <br>
+    <div id="current-hint" class="current-hint"></div>
+    <div class="board-container" id="board-container" tabindex="0">
+    </div>
+    </div>
+</div>
+
+  </body>
+</html>
