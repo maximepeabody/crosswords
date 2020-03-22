@@ -96,6 +96,12 @@
 
 }
 
+.fake-input {
+  opacity:0;
+  filter:alpha(opacity=0);
+  width: 0px;
+}
+
 ::-webkit-scrollbar {
   -webkit-appearance: none;
   width: 7px;
@@ -108,13 +114,16 @@
 }
 
 .hint-list-container {
-  max-width: 300px;
+  max-width: 400px;
+  min-width: 300px;
   padding: 10px;
 }
 
 .hint-list {
   overflow-y: scroll;
-  max-height: 300px;
+  max-height: 400px;
+  min-height: 300px;
+  font-size: 12px;
 }
 
 
@@ -128,6 +137,7 @@
 
 .current-hint {
   text-align:center;
+  font-size: 12px;
 }
 
 

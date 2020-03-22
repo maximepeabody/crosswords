@@ -169,6 +169,11 @@ var UpdateView = function () {
     return;
   }
 
+  // Keep the hidden input in focus
+  // hiddenInput = document.getElementById('fake-input');
+  // hiddenInput.focus();
+  document.getElementById('fake-input').focus();
+
   // 1. Update word list to select current word.
   for (var i = 0; i < state.game.across.length; i++) {
     word = state.game.across[i];
@@ -207,17 +212,11 @@ var UpdateView = function () {
         continue;
       }
 
-      // Set the letter value
-    //  var inputLetterElement = element.querySelector('.cell-input-letter');
-      for (var i =0 ; i < element.childNodes.length; i++) {
-        if (element.childNodes[i].className == 'cell-input-letter') {
-          element.childNodes[i].innerHTML = state.game.board[x][y].guess.toUpperCase();
-        }
-      }
-
       // Set the cells in focus
+      var cell_in_focus = false;
       if (x == state.current_cell.x && y == state.current_cell.y) {
         element.className = "cell-selected-focus";
+        cell_in_focus = true;
       } else if (
         state.current_index != "" &&
         (state.dir == 'across' && state.game.board[x][y].across_index == state.current_index
@@ -226,6 +225,22 @@ var UpdateView = function () {
         element.className = "cell-selected";
       } else {
         element.className = "cell-input";
+      }
+
+      // Set the letter value
+    //  var inputLetterElement = element.querySelector('.cell-input-letter');
+      for (var i =0 ; i < element.childNodes.length; i++) {
+        if (element.childNodes[i].className == 'cell-input-letter') {
+          input_element = element.childNodes[i];
+          input_element.innerHTML = state.game.board[x][y].guess.toUpperCase();
+          /*
+          if (cell_in_focus) {
+            input_element.focus();
+          } else {
+            input_element.blur();
+          }
+          */
+        }
       }
     }
   }
@@ -262,7 +277,6 @@ var DrawHints = function() {
       state.current_index = index;
       state.current_cell = FindCellForIndex(index);
     }
-    document.getElementById('board-container').focus();
     UpdateView();
   });
 
@@ -293,7 +307,7 @@ var DrawHints = function() {
       state.current_index = index;
       state.current_cell = FindCellForIndex(index);
     }
-    document.getElementById('board-container').focus();
+  //  document.getElementById('board-container').focus();
     UpdateView();
   });
 }
@@ -364,7 +378,7 @@ var DrawBoard = function() {
       ProcessClick(parseInt(coord[0]), parseInt(coord[1]));
     }
   });
-  container.addEventListener("keydown", ProcessInput);
+  document.getElementById('fake-input').addEventListener("keydown", ProcessInput);
 }
 
 var IsCurrentCell = function(x, y) {

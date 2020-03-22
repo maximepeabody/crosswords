@@ -103,12 +103,11 @@ def get_clue_trie(clues, max_difficulty = 6, num_clues = 50):
     question = clue["question"]
     question.lower()
     if question == "":
-      print("empty question.")
       continue
     if "across" in question or "down" in question or \
         "Across" in question or "Down" in question or \
         "this puzzle" in question:
-      print("question contains 'across' or 'down' reference.")
+      continue
 
     # validate the answer
     if len(clue["answer"]) < 2 :
@@ -285,8 +284,8 @@ def fill_board_data(board, down, across):
         "guess": "",
         "empty": board[x][y] == EMPTY,
         "index": "",
-        "across_index": -1,
-        "down_index": -1
+        "across_index": "",
+        "down_index": ""
         }
 
   for word in down:
@@ -303,10 +302,17 @@ def fill_board_data(board, down, across):
     # for each cell that the word is in, set a pointer to the across data
     char_count = 0
     for char in word["word"]:
-      print(char);
       new_board[word["x"] + char_count][word["y"]]["across_index"] = word["index"]
       char_count += 1
   return new_board
+
+def calculate_puzzle_score(board_view):
+  num_letters = 0
+  for y in range(len(board_view[0])):
+    for x in range(len(board_view)):
+      if (board_view[x][y] != "#"):
+        num_letters += 1
+  return num_letters
 
 # Creates a random puzzle of specified difficulty.
 def create_puzzle(clues, clue_trie):
@@ -317,18 +323,37 @@ def create_puzzle(clues, clue_trie):
   dictionary = create_dictionary(clue_trie)
   board_view, down, across = create_board(board, num_iterations, dictionary, clue_trie)
   board = fill_board_data(board_view, down, across)
-  return board_view, board, down, across
+  puzzle_score = calculate_puzzle_score(board_view)
+  print ('puzzle score: ' + str(puzzle_score))
+  return board_view, board, down, across, puzzle_score
 
 def main():
-  games_per_difficulty = 5;
+  games_per_difficulty = 25
   # load clues from CSV file
   clues = load_clues()
+
+  # array containing objects of {'board': board, 'puzzle_score': puzzle_score}
+  boards = [None for x in range(0, games_per_difficulty+1)]
+
+  # create a bunch of games for each difficulty
   for difficulty in range(1,6):
     clue_trie = get_clue_trie(clues, difficulty, 100000)
     for game_num in range(1, games_per_difficulty):
-      board_view, board, down, across = create_puzzle(clues, clue_trie)
-      print_board(board_view)
-      db.child("puzzles").child(difficulty).child("game-"+str(game_num)).set({"board": board, "down": down, "across": across})
+      board_view, board, down, across, puzzle_score = create_puzzle(clues, clue_trie)
+      if boards[difficulty]:
+        boards[difficulty].append({'board': board,
+         'puzzle_score': puzzle_score,
+         'down': down,
+         'across': across});
+      else:
+        boards[difficulty] = [{'board': board, 'puzzle_score': puzzle_score}]
+
+  # save the top n games of each difficulty
+  top_games = 5
+  for difficulty in range(1,6):
+    boards[difficulty].sort(key=lambda x: x['puzzle_score'], reverse=True)
+    for game_num in range(0, top_games-1):
+      db.child("puzzles").child(difficulty).child("game-"+str(game_num)).set(boards[difficulty][game_num])
 
 
 # new idea. rank words from longest to shortest.
