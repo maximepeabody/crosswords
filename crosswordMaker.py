@@ -86,7 +86,8 @@ def load_clues():
   return clues
 
 # Gets a map of word -> {hint, difficulty}
-# TODO preprocess clue map
+# TODO preprocess clue map?
+# difficulty is 1 hardest, 6 easiest
 def get_clue_trie(clues, max_difficulty = 6, num_clues = 50):
   print("Creating clue set")
   clue_trie = pygtrie.CharTrie();
@@ -113,7 +114,7 @@ def get_clue_trie(clues, max_difficulty = 6, num_clues = 50):
     if len(clue["answer"]) < 2 :
       print("invalid one char answer: " + clue["answer"])
       continue
-    if new_clue["difficulty"] <= max_difficulty :
+    if new_clue["difficulty"] >= max_difficulty :
       clue_trie[clue["answer"]] = new_clue
     #  num_clues -= 1
   #    if num_clues <= 0:

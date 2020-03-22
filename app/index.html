@@ -1,39 +1,27 @@
 
 <!DOCTYPE html>
 <html>
-  <!-- Angular -->
-  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>
-  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular-route.js"></script>
   <!-- Firebase -->
   <script src="https://www.gstatic.com/firebasejs/3.6.6/firebase.js"></script>
-
-  <!-- AngularFire -->
-  <script src="https://cdn.firebase.com/libs/angularfire/2.3.0/angularfire.min.js"></script>
-
-  <!-- Bootstrap style code -->
-  <!-- Latest compiled and minified CSS -->
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-
-  <!-- jQuery library -->
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-
-  <!-- Latest compiled JavaScript -->
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-
   <link rel="stylesheet" type="text/css" href="style.css">
-
   <script src="./index.js">
 
   </script>
 
   <body>
-      <h1> Welcome! Select a game or paste a gamecode. Share your URL to play cooperatively</h1>
+    <div class='home'>
+      <h1> Cooperative Crosswords! </h1>
+      <p> </p>
+      <select id="difficulty">
+        <option value="3" selected>Easy</option>
+        <option value="2">Medium</option>
+        <option value="1">Hard</option>
+      </select>
       <button onclick="GenerateGame()"> Generate Game </button>
       <div id='loader'></div>
       <br>
       <br>
       <input placeholder="gamecode" id="gamecode-input"> <button onclick="LoadGame()"> Load Game </button>
     </div>
-
   </body>
 </html>

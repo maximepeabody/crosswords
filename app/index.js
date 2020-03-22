@@ -9,13 +9,16 @@ var db = firebase.database();
 var game_ref;
 
 var GenerateGame = function(){
+  var difficulty = parseInt(document.getElementById("difficulty").value);
+  console.log(difficulty);
+
   document.getElementById('loader').className = 'loader';
 
   // Fetch random game of specified max_difficulty
-  var difficulty = Math.floor(Math.random() * Math.floor(5)) + 1;
   var game_num = Math.floor(Math.random() * Math.floor(4)) + 1;
+  var game_diff = difficulty*(Math.floor(Math.random() * Math.floor(1)) + 1);
   var puzzle_ref = db.ref().child("puzzles")
-    .child(difficulty).child("game-" + game_num).once("value").then(function(snapshot) {
+    .child(game_diff).child("game-" + game_num).once("value").then(function(snapshot) {
       var puzzle = snapshot.val();
       if (puzzle == null) {
         console.log("Could not generate puzzle");
