@@ -9,6 +9,7 @@
 
   <!-- the app code -->
   <script src="simple_app.js"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no;user-scalable=0;"/>
 
   <body>
   <div id="main-container" class="main-container">
@@ -16,23 +17,23 @@
       <a href="./index.html"> Back </a>
       <br>
     </div>
-
-
-    <div class="hint-list-container">
-      <b> Down: </b> <br>
-      <div id="down-list" class="hint-list">
-      </div>
-    </div>
     <div class="hint-list-container">
       <b> Across: </b> <br>
       <div id="across-list" class="hint-list">
       </div>
     </div>
+    <div class="hint-list-container">
+      <b> Down: </b> <br>
+      <div id="down-list" class="hint-list">
+      </div>
+    </div>
     <div class="game-container">
     <b> Board. </b> <br>
-    <div id="current-hint" class="current-hint"></div>
-    <input id="fake-input" class="fake-input">
     <div class="board-container" id="board-container" tabindex="0">
+    </div>
+    <div id='game-footer'>
+      <div id="current-hint" class="current-hint"></div>
+      <input id="fake-input" class="fake-input" autocapitalize="off" autocomplete="off" autocorrect="off" spellcheck="false">
     </div>
     </div>
 </div>
