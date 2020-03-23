@@ -82,6 +82,7 @@ var ProcessInput = function(event) {
   // the fakeInput contains all the text you write. So get the last char to
   // get the char from this input event.
   var fakeInputValue = document.getElementById('fake-input').value;
+  document.getElementById('fake-input').value = "";
   var fakeInputKey = fakeInputValue.substring(fakeInputValue.length-1);
 
   var key = event.key;
