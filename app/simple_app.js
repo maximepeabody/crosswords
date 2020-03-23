@@ -78,17 +78,17 @@ var ProcessClick = function(x, y) {
 // Keyboard listener for the board.
 var ProcessInput = function(event) {
   console.log('key pressed');
-  console.log(event);
+  var key = event.key;
   var x = state.current_cell.x;
   var y = state.current_cell.y;
-  if (event.key == 	'Backspace' /*backspace*/) {
+  if (key == 	'Backspace' /*backspace*/) {
     // if cell was already empty, go to prevCell. Otherwise, stay in current cell.
     if(state.game.board[x][y]["guess"] == "") {
       GoToPrevCell();
     } else {
       state.game.board[x][y]["guess"] = "";
     }
-  } else if (event.keyCode <= 64 || event.keyCode >= 91) {
+  } else if (key.length > 1) {
     // invalid keycode
     return;
   } else  {

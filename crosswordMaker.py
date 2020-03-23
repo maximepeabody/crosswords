@@ -346,10 +346,13 @@ def main():
          'down': down,
          'across': across});
       else:
-        boards[difficulty] = [{'board': board, 'puzzle_score': puzzle_score}]
+        boards[difficulty] = [{'board': board,
+         'puzzle_score': puzzle_score,
+         'down': down,
+         'across': across}]
 
   # save the top n games of each difficulty
-  top_games = 5
+  top_games = 10
   for difficulty in range(1,6):
     boards[difficulty].sort(key=lambda x: x['puzzle_score'], reverse=True)
     for game_num in range(0, top_games-1):
