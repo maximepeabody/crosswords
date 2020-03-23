@@ -78,6 +78,12 @@ var ProcessClick = function(x, y) {
 // Keyboard listener for the board.
 var ProcessInput = function(event) {
   console.log('key pressed');
+  // for android we need to get the text from the fake input.
+  // the fakeInput contains all the text you write. So get the last char to
+  // get the char from this input event.
+  var fakeInputValue = document.getElementById('fake-input').value;
+  var fakeInputKey = fakeInputValue.substring(fakeInputValue.length-1);
+
   var key = event.key;
   var x = state.current_cell.x;
   var y = state.current_cell.y;
@@ -88,11 +94,11 @@ var ProcessInput = function(event) {
     } else {
       state.game.board[x][y]["guess"] = "";
     }
-  } else if (key.length > 1) {
+  } else if (key.length > 1 && fakeInputKey > 1) {
     // invalid keycode
     return;
-  } else  {
-    state.game.board[x][y]["guess"] = event.key;
+  } else {
+    state.game.board[x][y]["guess"] = fakeInputKey;
     GoToNextCell();
   }
   UpdateView();
@@ -378,7 +384,7 @@ var DrawBoard = function() {
       ProcessClick(parseInt(coord[0]), parseInt(coord[1]));
     }
   });
-  document.getElementById('fake-input').addEventListener("keydown", ProcessInput);
+  document.getElementById('fake-input').addEventListener("keyup", ProcessInput);
 }
 
 var IsCurrentCell = function(x, y) {
