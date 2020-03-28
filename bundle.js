@@ -1,0 +1,1 @@
+console.error("SyntaxError: 'import' and 'export' may appear only with 'sourceType: module' (1:0) while parsing /Users/mpeabody/Documents/GitHub/crosswords/app/simple_app.js while parsing file: /Users/mpeabody/Documents/GitHub/crosswords/app/simple_app.js");
